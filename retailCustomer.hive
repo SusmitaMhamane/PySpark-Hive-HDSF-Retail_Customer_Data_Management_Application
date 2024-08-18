@@ -1,0 +1,30 @@
+-- Date: July 10, 2024
+
+-- Create database if not exists
+create database if not exists futurex;
+
+-- Show existing databases
+show databases;
+
+-- Use the 'futurex' database
+use futurex;
+
+-- Drop existing table if exists
+drop table if exists retailcustext_large purge;
+
+-- Create an external table 'retailcustext_large' to read retail customer data from CSV files
+create external table retailcustext_large (
+    customerid INT,
+    age INT,
+    salary FLOAT,
+    gender STRING,
+    country STRING
+) 
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY ',' 
+LOCATION '/user/futurexskill/retailcust/' 
+TBLPROPERTIES ('skip.header.line.count'='1');
+
+-- Select and display first 10 records from 'retailcustext_large' table
+select * from retailcustext_large limit 10;
+

@@ -1,0 +1,33 @@
+-- Date: July 10, 20210
+
+-- Set Hive properties
+SET hive.tez.bucket.pruning=true;
+SET hive.enforce.bucketing=true;
+SET hive.exec.dynamic.partition=true;
+SET hive.exec.dynamic.partition.mode=nonstrict;
+
+-- Show existing databases
+show databases;
+
+-- Use the 'futurex' database
+use futurex;
+
+-- Drop existing table if exists
+DROP TABLE IF EXISTS clean_retail_data PURGE;
+
+-- Create external table 'clean_retail_data' with partitions ('country', 'gender') and buckets ('salary')
+CREATE EXTERNAL TABLE clean_retail_data (
+    customerid INT,
+    age INT,
+    salary FLOAT
+)
+PARTITIONED BY (country STRING, gender STRING)
+CLUSTERED BY (salary) INTO 4 BUCKETS;
+
+-- Insert data into partitioned table 'clean_retail_data'
+INSERT INTO TABLE clean_retail_data PARTITION(country, gender)
+SELECT customerid, age, salary, country, gender FROM clean_retail;  -- Assuming 'clean_retail' table has the data
+
+-- Describe formatted details of 'clean_retail_data' table
+describe formatted clean_retail_data;
+
